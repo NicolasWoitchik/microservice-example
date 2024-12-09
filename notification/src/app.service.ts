@@ -9,7 +9,7 @@ export class AppService {
 
   @RabbitSubscribe({
     exchange: 'business_events',
-    routingKey: ['orders.#', 'stock.#', 'order.#'],
+    routingKey: ['#'],
     queue: 'notification_queue',
   })
   async ordersEventsHandler(
