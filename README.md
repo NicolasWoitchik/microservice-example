@@ -6,9 +6,9 @@ A arquitetura de eventos está separada da seguinte maneira:
 
 Temos uma exchange `business_events` do tipo `topic` que faz a gestão dos eventos-fila.
 
-A queue `notification_queue` está esperando qualquer evento acontecer para disparar alguma atualização para o usuário.
-A queue `check_stock_availability_queue` está esperando o evento `orders.created` para validar se o item está disponível para compra. Caso esteja, este dispara um novo evento na exchange `business_events` com a routing key `stock.available`.
-a queue `payment_queue` está esperando o evento `stock.available` para efetuar a cobrança do cliente. Caso a cobrança seja efetuada, este dispara um evento na exchange `business_events` com a routing key `order.success`
+- A queue `notification_queue` está esperando qualquer evento acontecer para disparar alguma atualização para o usuário.
+- A queue `check_stock_availability_queue` está esperando o evento `orders.created` para validar se o item está disponível para compra. Caso esteja, este dispara um novo evento na exchange `business_events` com a routing key `stock.available`.
+- A queue `payment_queue` está esperando o evento `stock.available` para efetuar a cobrança do cliente. Caso a cobrança seja efetuada, este dispara um evento na exchange `business_events` com a routing key `order.success`
 
 ## Recusros utilizados
 
