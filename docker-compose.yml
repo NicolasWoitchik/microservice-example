@@ -1,0 +1,51 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=rabbitmq
+      - RABBITMQ_DEFAULT_PASS=rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+  producer:
+    build:
+      context: ./producer
+      dockerfile: Dockerfile
+    container_name: producer
+    restart: unless-stopped
+    environment:
+      - RABBITMQ_URI=amqp://rabbitmq:rabbitmq@rabbitmq:5672
+      - INTERVAL=500
+    depends_on:
+      - rabbitmq
+  notification:
+    build:
+      context: ./notification
+      dockerfile: Dockerfile
+    container_name: notification
+    restart: unless-stopped
+    environment:
+      - RABBITMQ_URI=amqp://rabbitmq:rabbitmq@rabbitmq:5672
+    depends_on:
+      - rabbitmq
+  stock:
+    build:
+      context: ./stock
+      dockerfile: Dockerfile
+    container_name: stock
+    restart: unless-stopped
+    environment:
+      - RABBITMQ_URI=amqp://rabbitmq:rabbitmq@rabbitmq:5672
+    depends_on:
+      - rabbitmq
+  order:
+    build:
+      context: ./order
+      dockerfile: Dockerfile
+    container_name: order
+    restart: unless-stopped
+    environment:
+      - RABBITMQ_URI=amqp://rabbitmq:rabbitmq@rabbitmq:5672
+    depends_on:
+      - rabbitmq
