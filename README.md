@@ -1,11 +1,12 @@
 # Introdução
 
 Este projeto foi desenvolvido para uma aula de Microsserviços e seu funcionamento descentralizado.
+
 A arquitetura de eventos está separada da seguinte maneira:
+
 ![image](https://github.com/user-attachments/assets/3b6ff6f7-dc1c-42a1-acd7-b87ea535eb74)
 
-Temos uma exchange `business_events` do tipo `topic` que faz a gestão dos eventos-fila.
-
+- Temos uma exchange `business_events` do tipo `topic` que faz a gestão dos eventos-fila.
 - A queue `notification_queue` está esperando qualquer evento acontecer para disparar alguma atualização para o usuário.
 - A queue `check_stock_availability_queue` está esperando o evento `orders.created` para validar se o item está disponível para compra. Caso esteja, este dispara um novo evento na exchange `business_events` com a routing key `stock.available`.
 - A queue `payment_queue` está esperando o evento `stock.available` para efetuar a cobrança do cliente. Caso a cobrança seja efetuada, este dispara um evento na exchange `business_events` com a routing key `order.success`
