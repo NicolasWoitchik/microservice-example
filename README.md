@@ -1,6 +1,6 @@
 # Introdução
 
-Este projeto foi desenvolvido para uma aula de Microsserviços e seu funcionamento dedscentralizado.
+Este projeto foi desenvolvido para uma aula de Microsserviços e seu funcionamento descentralizado.
 
 ## Recusros utilizados
 
