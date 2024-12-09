@@ -38,6 +38,8 @@ Para visualizar as trocas de mensagens entre os containers basta rodar o command
 docker-compose logs notification order stock producer -f
 ```
 
+![image](https://github.com/user-attachments/assets/8c8e52e7-e106-4699-86f5-4378e927f1c1)
+
 ## Parar o projeto
 
 Para parar o projeto como um todo basta rodar o comando abaixo:
