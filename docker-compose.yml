@@ -8,6 +8,16 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=microservice
+      - MONGO_INITDB_ROOT_PASSWORD=example
+
   producer:
     build:
       context: ./producer
