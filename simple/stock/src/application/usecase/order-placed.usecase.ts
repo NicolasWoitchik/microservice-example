@@ -16,7 +16,7 @@ export class OrderPlacedUseCase {
     await new Promise((resolve) => setTimeout(resolve, 3000));
 
     await this.queue.publishExchange(
-      "bussiness_events",
+      "business_events",
       "stock.available",
       data,
       traceId

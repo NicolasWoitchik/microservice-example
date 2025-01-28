@@ -1,3 +1,4 @@
+import { DeliveryCreatedUseCase } from "./application/usecase/delivery.-created.usecase";
 import { OrderPlacedUseCase } from "./application/usecase/order-placed.usecase";
 import { OrderSuccessUseCase } from "./application/usecase/order-success.usecase";
 import { PaymentApprovedUseCase } from "./application/usecase/payment-approved.usecase";
@@ -12,6 +13,7 @@ async function main() {
   const stockAvailableUseCase = new StockAvailableUseCase();
   const paymentApprovedUseCase = new PaymentApprovedUseCase();
   const orderSuccessUseCase = new OrderSuccessUseCase();
+  const deliveryCreatedUseCase = new DeliveryCreatedUseCase();
 
   queue.consumeExchange(
     "business_events",
@@ -46,6 +48,15 @@ async function main() {
     "notification_order_success",
     async (data) => {
       await orderSuccessUseCase.execute(data);
+    }
+  );
+
+  queue.consumeExchange(
+    "business_events",
+    "delivery.created",
+    "notification_delivery_created",
+    async (data) => {
+      await deliveryCreatedUseCase.execute(data);
     }
   );
 }

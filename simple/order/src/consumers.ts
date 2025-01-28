@@ -12,27 +12,9 @@ export async function startConsumers(
 
   const confirmStockUseCase = new ConfirmStockUseCase(queue, orderRepository);
 
-  queue.consumeExchange(
-    "bussiness_events",
-    "stock.available",
-    "order_stock_available",
-    async (data) => {
-      await confirmStockUseCase.execute(data);
-    }
-  );
-
   const confirmPaymentUseCase = new ConfirmPaymentUseCase(
     queue,
     orderRepository
-  );
-
-  queue.consumeExchange(
-    "bussiness_events",
-    "payment.approved",
-    "stock_payment_approved",
-    async (data) => {
-      await confirmPaymentUseCase.execute(data);
-    }
   );
 
   const deliveryOrderSuccessUseCase = new DeliverySuccessUseCase(
@@ -42,8 +24,26 @@ export async function startConsumers(
 
   queue.consumeExchange(
     "business_events",
+    "stock.available",
+    "order_stock_available",
+    async (data) => {
+      await confirmStockUseCase.execute(data);
+    }
+  );
+
+  queue.consumeExchange(
+    "business_events",
+    "payment.approved",
+    "order_payment_approved",
+    async (data) => {
+      await confirmPaymentUseCase.execute(data);
+    }
+  );
+
+  queue.consumeExchange(
+    "business_events",
     "delivery.created",
-    "stock_delivery_success",
+    "order_delivery_success",
     async (data) => {
       await deliveryOrderSuccessUseCase.execute(data);
     }

@@ -32,13 +32,13 @@ export class CreateOrderUseCase {
       quantity: order.quantity,
     };
 
-    order.addEvent(orderPlacedEvent);
+    order.addEvent({ ...orderPlacedEvent, event: "order.placed" });
 
     await this.orderRepository.save(order);
 
     await this.queue.publishExchange(
       "business_events",
-      "orders.placed",
+      "order.placed",
       orderPlacedEvent,
       crypto.randomUUID()
     );

@@ -22,7 +22,7 @@ export class DeliverySuccessUseCase {
 
     order.confimedDelivery();
 
-    order.addEvent(data);
+    order.addEvent({ ...data, event: "delivery.created" });
 
     await this.orderRepository.update(order);
   }

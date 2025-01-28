@@ -27,15 +27,22 @@ export default class RabbitMQAdapter implements Queue {
     callback: Function
   ): Promise<void> {
     const channel = await this.connection.createChannel();
+    await channel.prefetch(1);
     await channel.assertExchange(exchangeName, "topic", { durable: true });
     await channel.assertQueue(queueName, { durable: true });
     await channel.bindQueue(queueName, exchangeName, routingKey);
-    await channel.consume(queueName, async (msg: any) => {
-      const input = JSON.parse(msg.content.toString());
-      const traceId = msg.properties.headers?.trace_id;
-      await callback(input, traceId);
-      channel.ack(msg);
-    });
+    await channel.consume(
+      queueName,
+      async (msg: any) => {
+        const input = JSON.parse(msg.content.toString());
+        const traceId = msg.properties.headers?.trace_id;
+        await callback(input, traceId);
+        channel.ack(msg);
+      },
+      {
+        consumerTag: queueName,
+      }
+    );
   }
 
   async publish(queueName: string, data: any): Promise<void> {

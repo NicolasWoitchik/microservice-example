@@ -1,9 +1,9 @@
-import { model, Document, Schema } from "mongoose";
+import { model, Document, Schema, Model } from "mongoose";
 import { OrderRepository } from "../../application/repositories/order.repository";
 import Order from "../../domain/Order";
 
 export class OrderRepositoryMongoDB implements OrderRepository {
-  private orderModel: any;
+  private readonly orderModel: Model<OrderDocument>;
 
   constructor() {
     const orderSchema = new Schema({
@@ -19,12 +19,26 @@ export class OrderRepositoryMongoDB implements OrderRepository {
   }
 
   async save(order: Order): Promise<void> {
-    const orderDocument = new this.orderModel(order);
+    const orderDocument = new this.orderModel({
+      _id: order.orderId,
+      ...order,
+    });
     await orderDocument.save();
   }
 
   async update(order: Order): Promise<void> {
-    await this.orderModel.updateOne({ _id: order.orderId }, { $set: order });
+    await this.orderModel.updateOne(
+      { _id: order.orderId },
+      {
+        $set: {
+          product: order.product,
+          price: order.price,
+          quantity: order.quantity,
+          status: order.getStatus(),
+          events: order.getEvents(),
+        },
+      }
+    );
   }
 
   async getById(id: string): Promise<Order> {
@@ -35,7 +49,8 @@ export class OrderRepositoryMongoDB implements OrderRepository {
           orderDocument.product,
           orderDocument.price,
           orderDocument.quantity,
-          orderDocument.status
+          orderDocument.status,
+          orderDocument.events
         )
       : null;
   }

@@ -8,8 +8,8 @@ async function main() {
   const stockAvailableUseCase = new StockAvailableUseCase(queue);
 
   queue.consumeExchange(
-    "bussiness_events",
-    "payment.approved",
+    "business_events",
+    "stock.available",
     "payment_stock_available",
     async (data, traceId) => {
       await stockAvailableUseCase.execute(data, traceId);

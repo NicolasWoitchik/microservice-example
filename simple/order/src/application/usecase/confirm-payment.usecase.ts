@@ -22,9 +22,12 @@ export class ConfirmPaymentUseCase {
 
     order.confirm();
 
-    order.addEvent(data);
+    order.addEvent({ ...data, event: "payment.approved" });
+    order.addEvent({ ...data, event: "order.success" });
 
     await this.orderRepository.update(order);
+
+    await new Promise((resolve) => setTimeout(resolve, 4000));
 
     await this.queue.publishExchange(
       "business_events",

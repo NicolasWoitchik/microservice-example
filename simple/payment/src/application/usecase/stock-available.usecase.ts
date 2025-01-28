@@ -16,7 +16,7 @@ export class StockAvailableUseCase {
     await new Promise((resolve) => setTimeout(resolve, 5000));
 
     await this.queue.publishExchange(
-      "bussiness_events",
+      "business_events",
       "payment.approved",
       data,
       traceId

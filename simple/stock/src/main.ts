@@ -8,7 +8,7 @@ async function main() {
   const orderPlacedUseCase = new OrderPlacedUseCase(queue);
 
   queue.consumeExchange(
-    "bussiness_events",
+    "business_events",
     "order.placed",
     "stock_order_placed",
     async (data, traceId) => {

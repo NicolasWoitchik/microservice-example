@@ -22,7 +22,7 @@ export class ConfirmStockUseCase {
 
     order.confimedStock();
 
-    order.addEvent(data);
+    order.addEvent({ ...data, event: "stock.available" });
 
     await this.orderRepository.update(order);
   }

@@ -7,7 +7,7 @@ export default class Order {
     readonly price: number,
     readonly quantity: number,
     private status: string,
-    private events?: Record<string, any>[]
+    private readonly events: Record<string, any>[] = []
   ) {}
 
   confirm() {
