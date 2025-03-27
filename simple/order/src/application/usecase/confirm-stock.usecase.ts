@@ -16,6 +16,7 @@ export class ConfirmStockUseCase {
   ) {}
 
   async execute(data: Input): Promise<void> {
+    console.log("ConfirmStockUseCase", data);
     const order = await this.orderRepository.getById(data.orderId);
 
     if (!order) throw new Error("Order not found");

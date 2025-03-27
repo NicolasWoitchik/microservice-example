@@ -13,7 +13,7 @@ export class StockAvailableUseCase {
   async execute(data: StockAvailableEvent, traceId: string): Promise<void> {
     console.log("StockAvailableUseCase", data);
 
-    await new Promise((resolve) => setTimeout(resolve, 5000));
+    await new Promise((resolve) => setTimeout(resolve, 1500));
 
     await this.queue.publishExchange(
       "business_events",

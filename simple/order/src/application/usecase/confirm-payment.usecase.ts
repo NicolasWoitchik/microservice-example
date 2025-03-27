@@ -16,6 +16,7 @@ export class ConfirmPaymentUseCase {
   ) {}
 
   async execute(data: Input, traceId?: string): Promise<void> {
+    console.log("ConfirmPaymentUseCase", data);
     const order = await this.orderRepository.getById(data.orderId);
 
     if (!order) throw new Error("Order not found");

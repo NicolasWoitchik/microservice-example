@@ -23,6 +23,7 @@ export class CreateOrderUseCase {
   ) {}
 
   async execute(data: OrderDTO): Promise<string> {
+    console.log("CreateOrderUseCase", data);
     const order = Order.create(data.product, data.price, data.quantity);
 
     const orderPlacedEvent = {
