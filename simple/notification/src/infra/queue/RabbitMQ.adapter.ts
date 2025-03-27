@@ -34,7 +34,6 @@ export default class RabbitMQAdapter implements Queue {
       async (msg: any) => {
         const input = JSON.parse(msg.content.toString());
         await callback(input);
-        await new Promise((resolve) => setTimeout(resolve, 10000));
         channel.ack(msg);
       },
       {
