@@ -10,6 +10,7 @@ import RabbitMQAdapter from "./infra/queue/RabbitMQ.adapter";
 import { startConsumers } from "./consumers";
 import { OrderRepositoryMongoDB } from "./infra/repositories/order.repository";
 import GetOrderByIdUseCase from "./application/usecase/get-order-by-id.usecase";
+import apm from "elastic-apm-node";
 
 async function main() {
   const app = express();
@@ -23,6 +24,16 @@ async function main() {
 
   await mongoose.connect(mongoUrl);
   await queue.connect();
+
+  await apm.start({
+    serviceName: "order",
+
+    secretToken: "B2QCby1NKf6y70OrxL",
+
+    serverUrl: "http://192.168.15.24:8200",
+
+    environment: "development",
+  });
 
   await startConsumers(queue, orderRepository);
 
@@ -56,4 +67,4 @@ async function main() {
     console.log("Server is running on port 3000");
   });
 }
-main();
+main().catch(console.log);
