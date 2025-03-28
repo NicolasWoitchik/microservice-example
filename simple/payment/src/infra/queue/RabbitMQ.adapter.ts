@@ -6,7 +6,9 @@ export default class RabbitMQAdapter implements Queue {
   connection: Connection;
 
   async connect(): Promise<void> {
-    this.connection = await amqp.connect("amqp://rabbitmq:rabbitmq@localhost");
+    this.connection = await amqp.connect(
+      process.env.RABBITMQ_URL || "amqp://rabbitmq:rabbitmq@localhost"
+    );
   }
 
   async consume(queueName: string, callback: Function): Promise<void> {

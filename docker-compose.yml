@@ -193,12 +193,46 @@ services:
       - SERVER_SSL_KEY=config/certs/kibana/kibana.key
       - SERVER_SSL_CERTIFICATEAUTHORITIES=config/certs/ca/ca.crt
       - ELASTIC_APM_SECRET_TOKEN=${ELASTIC_APM_SECRET_TOKEN}
+      - ENTERPRISESEARCH_HOST=http://enterprisesearch:${ENTERPRISE_SEARCH_PORT}
+
     mem_limit: ${KB_MEM_LIMIT}
     healthcheck:
       test:
         [
           "CMD-SHELL",
           "curl -I -s --cacert config/certs/ca/ca.crt https://localhost:5601 | grep -q 'HTTP/1.1 302 Found'",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 120
+  enterprisesearch:
+    depends_on:
+      es01:
+        condition: service_healthy
+      kibana:
+        condition: service_healthy
+    image: docker.elastic.co/enterprise-search/enterprise-search:${STACK_VERSION}
+    volumes:
+      - certs:/usr/share/enterprise-search/config/certs
+      - enterprisesearchdata:/usr/share/enterprise-search/config
+    ports:
+      - ${ENTERPRISE_SEARCH_PORT}:3002
+    environment:
+      - SERVERNAME=enterprisesearch
+      - secret_management.encryption_keys=[${ENCRYPTION_KEYS}]
+      - allow_es_settings_modification=true
+      - elasticsearch.host=https://es01:9200
+      - elasticsearch.username=elastic
+      - elasticsearch.password=${ELASTIC_PASSWORD}
+      - elasticsearch.ssl.enabled=true
+      - elasticsearch.ssl.certificate_authority=/usr/share/enterprise-search/config/certs/ca/ca.crt
+      - kibana.external_url=http://kibana:5601
+    mem_limit: ${MEM_LIMIT}
+    healthcheck:
+      test:
+        [
+            "CMD-SHELL",
+            "curl -s -I http://localhost:3002 | grep -q 'HTTP/1.1 302 Found'",
         ]
       interval: 10s
       timeout: 10s
@@ -336,4 +370,6 @@ volumes:
   logstashdata01:
     driver: local
   fleetserverdata:
+    driver: local
+  enterprisesearchdata:
     driver: local

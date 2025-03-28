@@ -5,6 +5,7 @@
   },
   "devDependencies": {
     "@types/amqplib": "^0.10.6",
+    "@types/elastic-apm-node": "^2.7.2",
     "@types/express": "^5.0.0",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.7.3"
@@ -12,6 +13,8 @@
   "dependencies": {
     "amqplib": "^0.10.5",
     "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "elastic-apm-node": "^4.11.2",
     "express": "^4.21.2",
     "mongoose": "^8.9.5",
     "ts-node": "^10.9.2"

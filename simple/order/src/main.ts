@@ -65,10 +65,6 @@ async function main() {
 
     const orderId = await createOrderUseCase.execute(input);
 
-    apm.setCustomContext({
-      orderId,
-    });
-
     return res.json({
       order_id: orderId,
       status: "created",

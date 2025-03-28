@@ -1,5 +1,6 @@
 import { Queue } from "src/infra/queue/Queue";
 import { OrderRepository } from "../repositories/order.repository";
+import apm from "elastic-apm-node";
 
 export type Input = {
   orderId: string;
@@ -7,6 +8,9 @@ export type Input = {
   product: string;
   price: number;
   quantity: number;
+
+  transactionId: string;
+  span: { traceId: string; spanId: string };
 };
 
 export class ConfirmPaymentUseCase {
@@ -16,6 +20,14 @@ export class ConfirmPaymentUseCase {
   ) {}
 
   async execute(data: Input, traceId?: string): Promise<void> {
+    const transaction = apm.startTransaction("ConfirmPaymentUseCase", {
+      childOf: data.transactionId,
+      links: [
+        {
+          context: data.span,
+        },
+      ],
+    });
     console.log("ConfirmPaymentUseCase", data);
     const order = await this.orderRepository.getById(data.orderId);
 
@@ -36,5 +48,6 @@ export class ConfirmPaymentUseCase {
       data,
       traceId
     );
+    transaction.end();
   }
 }
