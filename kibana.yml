@@ -5,6 +5,7 @@ elastic:
     secretToken: ${ELASTIC_APM_SECRET_TOKEN}
 server.host: "0.0.0.0"
 telemetry.enabled: "true"
+enterpriseSearch.host: "http://localhost:3002"
 xpack.fleet.packages:
   - name: fleet_server
     version: latest
