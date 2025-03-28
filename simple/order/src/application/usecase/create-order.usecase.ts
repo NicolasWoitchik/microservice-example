@@ -2,6 +2,7 @@ import { Queue } from "../../infra/queue/Queue";
 import Order from "../../domain/Order";
 import { OrderRepository } from "../repositories/order.repository";
 import crypto from "crypto";
+import { logger } from "../../../src/main";
 
 export type OrderDTO = {
   product: string;
@@ -36,6 +37,8 @@ export class CreateOrderUseCase {
     order.addEvent({ ...orderPlacedEvent, event: "order.placed" });
 
     await this.orderRepository.save(order);
+
+    logger.info(orderPlacedEvent);
 
     await this.queue.publishExchange(
       "business_events",

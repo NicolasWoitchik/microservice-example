@@ -10,10 +10,28 @@ import RabbitMQAdapter from "./infra/queue/RabbitMQ.adapter";
 import { startConsumers } from "./consumers";
 import { OrderRepositoryMongoDB } from "./infra/repositories/order.repository";
 import GetOrderByIdUseCase from "./application/usecase/get-order-by-id.usecase";
-import apm from "elastic-apm-node";
+import apm, { middleware } from "elastic-apm-node";
+
+export const logger = apm.logger;
 
 async function main() {
+  apm.start({
+    serviceName: "order",
+    secretToken: "supersecrettoken",
+    serverUrl: "http://192.168.15.24:8200",
+    environment: "development",
+    active: true,
+    captureBody: "all",
+    captureErrorLogStackTraces: "always",
+    captureExceptions: true,
+    captureHeaders: true,
+  });
+
   const app = express();
+
+  const middle = middleware.connect();
+
+  app.use(middle);
 
   const mongoUrl = process.env.MONGODB_URL || "mongodb://localhost:27017";
 
@@ -24,13 +42,6 @@ async function main() {
 
   await mongoose.connect(mongoUrl);
   await queue.connect();
-
-  await apm.start({
-    serviceName: "order",
-    secretToken: "B2QCby1NKf6y70OrxL",
-    serverUrl: "http://192.168.15.24:8200",
-    environment: "development",
-  });
 
   await startConsumers(queue, orderRepository);
 
@@ -53,6 +64,10 @@ async function main() {
     };
 
     const orderId = await createOrderUseCase.execute(input);
+
+    apm.setCustomContext({
+      orderId,
+    });
 
     return res.json({
       order_id: orderId,
