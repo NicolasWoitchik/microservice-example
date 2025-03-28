@@ -27,11 +27,8 @@ async function main() {
 
   await apm.start({
     serviceName: "order",
-
     secretToken: "B2QCby1NKf6y70OrxL",
-
     serverUrl: "http://192.168.15.24:8200",
-
     environment: "development",
   });
 
